@@ -1139,10 +1139,14 @@ export const useStore = create<AppState>()(
         }),
         {
             name: 'robosphere-crm-storage',
+            version: 2, // Increment this to force clear old localStorage
+            // ONLY persist auth state and UI preferences
+            // NEVER persist data - always load fresh from Supabase
             partialize: (state) => ({
                 currentUser: state.currentUser,
                 isAuthenticated: state.isAuthenticated,
                 sidebarCollapsed: state.sidebarCollapsed,
+                statusThresholds: state.statusThresholds,
             }),
         }
     )
