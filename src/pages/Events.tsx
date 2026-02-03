@@ -72,20 +72,22 @@ export const EventsPage: React.FC = () => {
             />
 
             {/* Tabs */}
-            <div className="flex gap-1 mb-6 p-1 bg-plate rounded-lg w-fit">
-                {tabs.map((tab) => (
-                    <button
-                        key={tab.key}
-                        onClick={() => setActiveTab(tab.key)}
-                        className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${activeTab === tab.key
-                            ? 'bg-accent-core text-void'
-                            : 'text-text-muted hover:text-text-primary hover:bg-grid'
-                            }`}
-                    >
-                        {tab.label}
-                        <span className="ml-2 text-xs opacity-70">({tab.count})</span>
-                    </button>
-                ))}
+            <div className="overflow-x-auto scrollbar-hide mb-6">
+                <div className="flex gap-1 p-1 bg-plate rounded-lg w-fit min-w-full sm:min-w-0">
+                    {tabs.map((tab) => (
+                        <button
+                            key={tab.key}
+                            onClick={() => setActiveTab(tab.key)}
+                            className={`px-4 py-2.5 sm:py-2 rounded-md text-sm font-medium transition-colors whitespace-nowrap ${activeTab === tab.key
+                                ? 'bg-accent-core text-void'
+                                : 'text-text-muted hover:text-text-primary hover:bg-grid'
+                                }`}
+                        >
+                            {tab.label}
+                            <span className="ml-2 text-xs opacity-70">({tab.count})</span>
+                        </button>
+                    ))}
+                </div>
             </div>
 
             {/* Events List */}

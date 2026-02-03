@@ -157,28 +157,30 @@ export const MembersPage: React.FC = () => {
             />
 
             {/* Tabs */}
-            <div className="flex gap-1 mb-4 p-1 bg-slate-100 rounded-lg w-fit">
-                {tabs.map((tab) => (
-                    <button
-                        key={tab.key}
-                        onClick={() => setActiveTab(tab.key)}
-                        className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${activeTab === tab.key
-                            ? 'bg-white text-black shadow-sm'
-                            : 'text-slate-500 hover:text-slate-900 hover:bg-slate-200/50'
-                            }`}
-                    >
-                        {tab.label}
-                        <span className={`ml-2 text-xs ${activeTab === tab.key ? 'text-black/60' : 'text-slate-400'}`}>
-                            ({tab.count})
-                        </span>
-                    </button>
-                ))}
+            <div className="overflow-x-auto scrollbar-hide mb-4">
+                <div className="flex gap-1 p-1 bg-slate-100 rounded-lg w-fit min-w-full sm:min-w-0">
+                    {tabs.map((tab) => (
+                        <button
+                            key={tab.key}
+                            onClick={() => setActiveTab(tab.key)}
+                            className={`px-3 py-2 sm:py-1.5 rounded-md text-sm font-medium transition-all whitespace-nowrap ${activeTab === tab.key
+                                ? 'bg-white text-black shadow-sm'
+                                : 'text-slate-500 hover:text-slate-900 hover:bg-slate-200/50'
+                                }`}
+                        >
+                            {tab.label}
+                            <span className={`ml-2 text-xs ${activeTab === tab.key ? 'text-black/60' : 'text-slate-400'}`}>
+                                ({tab.count})
+                            </span>
+                        </button>
+                    ))}
+                </div>
             </div>
 
             {/* Toolbar */}
             <Card padding="sm" className="mb-4">
-                <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between">
-                    <div className="flex-1 max-w-md">
+                <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between">
+                    <div className="flex-1 w-full sm:max-w-md">
                         <Input
                             placeholder="Search by name, ID, or email..."
                             value={searchQuery}
@@ -192,10 +194,11 @@ export const MembersPage: React.FC = () => {
                             options={sortOptions}
                             value={sortBy}
                             onChange={(e) => setSortBy(e.target.value)}
-                            className="w-36"
+                            className="flex-1 sm:w-36"
                         />
 
-                        <div className="flex border border-grid rounded-lg">
+                        {/* View toggle - hidden on mobile, grid is better for touch */}
+                        <div className="hidden sm:flex border border-grid rounded-lg">
                             <button
                                 onClick={() => setViewMode('grid')}
                                 className={`p-2 ${viewMode === 'grid'

@@ -48,31 +48,33 @@ export const UsersPage: React.FC = () => {
     return (
         <div className="space-y-6">
             {/* Admin Navigation Tabs */}
-            <div className="flex gap-2 border-b border-slate-200 pb-1">
-                <Button
-                    variant={isActive('/admin') ? 'primary' : 'ghost'}
-                    size="sm"
-                    onClick={() => navigate('/admin')}
-                    leftIcon={<Settings className="w-4 h-4" />}
-                >
-                    Users
-                </Button>
-                <Button
-                    variant={isActive('/admin/audit-logs') ? 'primary' : 'ghost'}
-                    size="sm"
-                    onClick={() => navigate('/admin/audit-logs')}
-                    leftIcon={<FileText className="w-4 h-4" />}
-                >
-                    Audit Logs
-                </Button>
-                <Button
-                    variant={isActive('/admin/settings') ? 'primary' : 'ghost'}
-                    size="sm"
-                    onClick={() => navigate('/admin/settings')}
-                    leftIcon={<Settings className="w-4 h-4" />}
-                >
-                    Settings
-                </Button>
+            <div className="overflow-x-auto scrollbar-hide border-b border-slate-200 pb-1">
+                <div className="flex gap-2 min-w-max">
+                    <Button
+                        variant={isActive('/admin') ? 'primary' : 'ghost'}
+                        size="sm"
+                        onClick={() => navigate('/admin')}
+                        leftIcon={<Settings className="w-4 h-4" />}
+                    >
+                        Users
+                    </Button>
+                    <Button
+                        variant={isActive('/admin/audit-logs') ? 'primary' : 'ghost'}
+                        size="sm"
+                        onClick={() => navigate('/admin/audit-logs')}
+                        leftIcon={<FileText className="w-4 h-4" />}
+                    >
+                        Audit Logs
+                    </Button>
+                    <Button
+                        variant={isActive('/admin/settings') ? 'primary' : 'ghost'}
+                        size="sm"
+                        onClick={() => navigate('/admin/settings')}
+                        leftIcon={<Settings className="w-4 h-4" />}
+                    >
+                        Settings
+                    </Button>
+                </div>
             </div>
 
             <PageHeader

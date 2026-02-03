@@ -60,17 +60,21 @@ export const Modal: React.FC<ModalProps> = ({
         <div
             ref={overlayRef}
             onClick={handleOverlayClick}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50"
+            className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/50"
         >
             <div
                 className={cn(
-                    'w-full bg-bg-card rounded-xl shadow-xl',
+                    'w-full bg-bg-card shadow-xl',
+                    // Full-screen on mobile, rounded on larger screens
+                    'rounded-t-xl sm:rounded-xl',
+                    // Full height on mobile, auto on larger screens
+                    'max-h-[90vh] sm:max-h-[85vh]',
                     sizeStyles[size]
                 )}
             >
                 {/* Header */}
                 {(title || showCloseButton) && (
-                    <div className="flex items-center justify-between px-6 py-4 border-b border-border">
+                    <div className="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-border">
                         {title && (
                             <h2 className="text-lg font-semibold text-text-primary">
                                 {title}
@@ -90,7 +94,7 @@ export const Modal: React.FC<ModalProps> = ({
                 )}
 
                 {/* Content */}
-                <div className="px-6 py-4 max-h-[calc(100vh-200px)] overflow-y-auto">
+                <div className="px-4 sm:px-6 py-4 max-h-[calc(90vh-120px)] sm:max-h-[calc(85vh-120px)] overflow-y-auto">
                     {children}
                 </div>
             </div>
