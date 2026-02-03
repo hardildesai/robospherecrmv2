@@ -32,6 +32,7 @@ import type {
     Reservation,
 } from './types';
 import { loadAllData } from './supabaseHelpers';
+import { supabase } from './supabase';
 
 // Utility functions for audit logging
 const generateLogId = () => `log-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
@@ -278,39 +279,66 @@ export const useStore = create<AppState>()(
                 }
             },
 
+
             // ============ AUTH ACTIONS ============
             login: async (username, password) => {
-                // Find user by username
-                const user = get().users.find((u) => u.username === username);
-
-                if (!user) {
-                    get().addAuditLog('LOGIN_FAILURE', `Failed login attempt for user: ${username}`);
-                    return { success: false, message: 'Invalid credentials.' };
-                }
-
-                // Verify password using bcrypt
-                let passwordMatch = false;
                 try {
-                    // user.password is the bcrypt hash from database
-                    passwordMatch = await bcrypt.compare(password, user.password);
+                    // CRITICAL: Fetch user directly from Supabase
+                    // We can't rely on get().users because data isn't loaded until AFTER login
+                    const { data: userData, error: fetchError } = await supabase
+                        .from('users')
+                        .select('*')
+                        .eq('username', username)
+                        .single();
+
+                    if (fetchError || !userData) {
+                        console.error('User fetch error:', fetchError);
+                        get().addAuditLog('LOGIN_FAILURE', `Failed login attempt for user: ${username}`);
+                        return { success: false, message: 'Invalid credentials.' };
+                    }
+
+                    // Convert database format to app format
+                    const user: User = {
+                        id: userData.id,
+                        name: userData.name,
+                        username: userData.username,
+                        password: userData.password_hash, // This is the bcrypt hash
+                        role: userData.role,
+                        isActive: userData.is_active,
+                        failedAccessAttempts: userData.failed_access_attempts,
+                    };
+
+                    // Verify password using bcrypt
+                    let passwordMatch = false;
+                    try {
+                        passwordMatch = await bcrypt.compare(password, user.password);
+                    } catch (error) {
+                        console.error('Password comparison error:', error);
+                        passwordMatch = false;
+                    }
+
+                    if (!passwordMatch) {
+                        get().addAuditLog('LOGIN_FAILURE', `Failed login attempt for user: ${username}`);
+                        return { success: false, message: 'Invalid credentials.' };
+                    }
+
+                    if (!user.isActive) {
+                        return { success: false, message: 'Account suspended. Contact Super Admin.' };
+                    }
+
+                    // Login successful - set user and auth state
+                    set({ currentUser: user, isAuthenticated: true });
+                    get().addAuditLog('LOGIN_SUCCESS', `${user.name} logged in successfully.`);
+                    get().addToast({ type: 'success', message: 'Login successful!' });
+
+                    // NOW load all data after successful login
+                    get().initializeData();
+
+                    return { success: true, message: 'Login successful.' };
                 } catch (error) {
-                    console.error('Password comparison error:', error);
-                    passwordMatch = false;
+                    console.error('Login error:', error);
+                    return { success: false, message: 'An error occurred during login.' };
                 }
-
-                if (!passwordMatch) {
-                    get().addAuditLog('LOGIN_FAILURE', `Failed login attempt for user: ${username}`);
-                    return { success: false, message: 'Invalid credentials.' };
-                }
-
-                if (!user.isActive) {
-                    return { success: false, message: 'Account suspended. Contact Super Admin.' };
-                }
-
-                set({ currentUser: user, isAuthenticated: true });
-                get().addAuditLog('LOGIN_SUCCESS', `${user.name} logged in successfully.`);
-                get().addToast({ type: 'success', message: 'Login successful!' });
-                return { success: true, message: 'Login successful.' };
             },
 
             logout: () => {
