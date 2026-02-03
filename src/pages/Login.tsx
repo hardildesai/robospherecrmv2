@@ -32,7 +32,7 @@ export const LoginPage: React.FC = () => {
         // 1. Authenticating Simulation
         await new Promise((resolve) => setTimeout(resolve, 800));
 
-        const result = login(username, password);
+        const result = await login(username, password);
 
         if (result.success) {
             setIsSuccess(true);
@@ -172,8 +172,8 @@ export const LoginPage: React.FC = () => {
                                                 value={username}
                                                 onChange={(e) => handleInput(setUsername, e.target.value)}
                                                 className={`w-full border-none rounded-xl px-4 py-3 font-medium outline-none transition-all ${isError
-                                                        ? 'bg-red-100/50 text-red-900 placeholder:text-red-300 focus:ring-2 focus:ring-red-500'
-                                                        : 'bg-slate-100 text-black placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500'
+                                                    ? 'bg-red-100/50 text-red-900 placeholder:text-red-300 focus:ring-2 focus:ring-red-500'
+                                                    : 'bg-slate-100 text-black placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500'
                                                     }`}
                                                 placeholder="Enter username"
                                             />
@@ -187,8 +187,8 @@ export const LoginPage: React.FC = () => {
                                                 value={password}
                                                 onChange={(e) => handleInput(setPassword, e.target.value)}
                                                 className={`w-full border-none rounded-xl px-4 py-3 font-medium outline-none transition-all ${isError
-                                                        ? 'bg-red-100/50 text-red-900 placeholder:text-red-300 focus:ring-2 focus:ring-red-500'
-                                                        : 'bg-slate-100 text-black placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500'
+                                                    ? 'bg-red-100/50 text-red-900 placeholder:text-red-300 focus:ring-2 focus:ring-red-500'
+                                                    : 'bg-slate-100 text-black placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500'
                                                     }`}
                                                 placeholder="••••••••"
                                             />
@@ -197,8 +197,8 @@ export const LoginPage: React.FC = () => {
                                             type="submit"
                                             disabled={isLoading}
                                             className={`w-full rounded-xl py-4 font-bold flex items-center justify-center gap-2 transition-all active:scale-[0.98] mt-4 ${isError
-                                                    ? 'bg-red-600 text-white hover:bg-red-700'
-                                                    : 'bg-black text-white hover:bg-slate-800'
+                                                ? 'bg-red-600 text-white hover:bg-red-700'
+                                                : 'bg-black text-white hover:bg-slate-800'
                                                 }`}
                                         >
                                             {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <>{isError ? 'Retry Authentication' : 'Access Dashboard'} <ArrowRight className="w-4 h-4" /></>}
