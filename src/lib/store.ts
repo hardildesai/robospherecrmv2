@@ -4,6 +4,7 @@
 
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import bcrypt from 'bcryptjs';
 import type {
     Member,
     ClubEvent,
@@ -287,9 +288,15 @@ export const useStore = create<AppState>()(
                     return { success: false, message: 'Invalid credentials.' };
                 }
 
-                // For now, simple password comparison (will add bcrypt later)
-                // In production, you should use bcrypt.compare(password, user.password)
-                const passwordMatch = user.password === password || password === 'admin123';
+                // Verify password using bcrypt
+                let passwordMatch = false;
+                try {
+                    // user.password is the bcrypt hash from database
+                    passwordMatch = await bcrypt.compare(password, user.password);
+                } catch (error) {
+                    console.error('Password comparison error:', error);
+                    passwordMatch = false;
+                }
 
                 if (!passwordMatch) {
                     get().addAuditLog('LOGIN_FAILURE', `Failed login attempt for user: ${username}`);
