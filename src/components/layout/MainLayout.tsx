@@ -98,7 +98,7 @@ export const MainLayout: React.FC = () => {
     };
 
     return (
-        <div className="fixed inset-0 w-full h-full bg-[#F8FAFC] text-text-primary font-sans selection:bg-primary selection:text-white flex flex-col md:flex-row overflow-hidden p-4">
+        <div className="fixed inset-0 w-full h-full bg-[#F8FAFC] text-text-primary font-sans selection:bg-primary selection:text-white flex flex-col md:flex-row overflow-hidden p-2 sm:p-4">
 
             {/* FLOATING SIDEBAR (Desktop) */}
             <motion.aside
@@ -183,7 +183,7 @@ export const MainLayout: React.FC = () => {
                 </div>
 
                 {/* Content Container with proper padding */}
-                <div className="p-6">
+                <div className="p-4 sm:p-6">
                     <Breadcrumbs />
                     <Outlet />
                 </div>

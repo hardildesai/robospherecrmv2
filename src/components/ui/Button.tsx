@@ -24,10 +24,10 @@ const variants = {
 };
 
 const sizes = {
-    sm: 'h-8 px-3 text-xs rounded-md',
-    md: 'h-10 px-4 text-sm rounded-lg',
+    sm: 'h-9 sm:h-8 px-3 text-xs rounded-md',
+    md: 'h-11 sm:h-10 px-4 text-sm rounded-lg',
     lg: 'h-12 px-6 text-base rounded-lg',
-    icon: 'h-10 w-10 p-0 items-center justify-center rounded-lg',
+    icon: 'h-11 w-11 sm:h-10 sm:w-10 p-0 items-center justify-center rounded-lg',
 };
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
