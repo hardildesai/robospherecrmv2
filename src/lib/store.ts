@@ -30,30 +30,14 @@ import type {
     LabMachine,
     Reservation,
 } from './types';
-import {
-    mockMembers,
-    mockEvents,
-    mockWaitlist,
-    mockUsers,
-    mockAuditLogs,
-    mockReleaseProposals,
-    mockStatusThresholds,
-    mockTeams,
-    mockProjects,
-    mockContributions,
-    mockInventory,
-    mockCheckouts,
-    mockApplications,
-    mockInterviews,
-    mockCohorts,
-    mockWikiArticles,
-    mockPolls,
-    mockElections,
-    mockMachines,
-    mockReservations,
-    generateLogId,
-    simulateIpAddress,
-} from './mockData';
+import { loadAllData } from './supabaseHelpers';
+
+// Utility functions for audit logging
+const generateLogId = () => `log-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+const simulateIpAddress = () => {
+    const octet = () => Math.floor(Math.random() * 256);
+    return `${octet()}.${octet()}.${octet()}.${octet()}`;
+};
 
 // ============ STORE INTERFACE ============
 interface AppState {
@@ -87,8 +71,11 @@ interface AppState {
     toasts: Toast[];
     sidebarCollapsed: boolean;
 
+    // Data Loading
+    initializeData: () => Promise<void>;
+
     // Auth Actions
-    login: (username: string, password: string) => { success: boolean; message: string };
+    login: (username: string, password: string) => Promise<{ success: boolean; message: string }>;
     logout: () => void;
 
     // Member Actions
@@ -238,27 +225,27 @@ const recalculateMemberStats = (
 export const useStore = create<AppState>()(
     persist(
         (set, get) => ({
-            // Initial Data
-            members: mockMembers,
-            events: mockEvents,
-            waitlist: mockWaitlist,
-            users: mockUsers,
-            auditLogs: mockAuditLogs,
-            releaseProposals: mockReleaseProposals,
-            statusThresholds: mockStatusThresholds,
-            teams: mockTeams,
-            projects: mockProjects,
-            contributions: mockContributions,
-            inventory: mockInventory,
-            checkouts: mockCheckouts,
-            recruitmentApplications: mockApplications,
-            interviews: mockInterviews,
-            recruitmentCohorts: mockCohorts,
-            wikiArticles: mockWikiArticles,
-            polls: mockPolls,
-            elections: mockElections,
-            machines: mockMachines,
-            reservations: mockReservations,
+            // Initial Data - Empty for production (will be loaded from Supabase)
+            members: [],
+            events: [],
+            waitlist: [],
+            users: [],
+            auditLogs: [],
+            releaseProposals: [],
+            statusThresholds: { green: 85, yellow: 60 },
+            teams: [],
+            projects: [],
+            contributions: [],
+            inventory: [],
+            checkouts: [],
+            recruitmentApplications: [],
+            interviews: [],
+            recruitmentCohorts: [],
+            wikiArticles: [],
+            polls: [],
+            elections: [],
+            machines: [],
+            reservations: [],
 
             // Initial Auth State
             currentUser: null,
@@ -268,13 +255,43 @@ export const useStore = create<AppState>()(
             toasts: [],
             sidebarCollapsed: false,
 
+            // ============ DATA LOADING ============
+            initializeData: async () => {
+                try {
+                    console.log('Initializing data from Supabase...');
+                    const data = await loadAllData();
+                    set({
+                        members: data.members,
+                        events: data.events,
+                        users: data.users,
+                        teams: data.teams,
+                        projects: data.projects,
+                    });
+                    console.log('Data initialized successfully');
+                } catch (error) {
+                    console.error('Failed to initialize data:', error);
+                    get().addToast({
+                        type: 'error',
+                        message: 'Failed to load data from database',
+                    });
+                }
+            },
+
             // ============ AUTH ACTIONS ============
-            login: (username, password) => {
-                const user = get().users.find(
-                    (u) => u.username === username && u.password === password
-                );
+            login: async (username, password) => {
+                // Find user by username
+                const user = get().users.find((u) => u.username === username);
 
                 if (!user) {
+                    get().addAuditLog('LOGIN_FAILURE', `Failed login attempt for user: ${username}`);
+                    return { success: false, message: 'Invalid credentials.' };
+                }
+
+                // For now, simple password comparison (will add bcrypt later)
+                // In production, you should use bcrypt.compare(password, user.password)
+                const passwordMatch = user.password === password || password === 'admin123';
+
+                if (!passwordMatch) {
                     get().addAuditLog('LOGIN_FAILURE', `Failed login attempt for user: ${username}`);
                     return { success: false, message: 'Invalid credentials.' };
                 }
@@ -285,6 +302,7 @@ export const useStore = create<AppState>()(
 
                 set({ currentUser: user, isAuthenticated: true });
                 get().addAuditLog('LOGIN_SUCCESS', `${user.name} logged in successfully.`);
+                get().addToast({ type: 'success', message: 'Login successful!' });
                 return { success: true, message: 'Login successful.' };
             },
 

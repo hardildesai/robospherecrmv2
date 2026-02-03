@@ -133,3 +133,91 @@ export const isValidPhone = (phone: string): boolean => {
 export const cn = (...classes: (string | undefined | null | false)[]): string => {
     return classes.filter(Boolean).join(' ');
 };
+
+// ============================================
+// ID Generation Functions
+// ============================================
+
+export const generateMemberId = (): string => {
+    // Generates RS-YYYY-XXXX format (e.g., RS-2024-0001)
+    const year = new Date().getFullYear();
+    const random = Math.floor(Math.random() * 10000);
+    return `RS-${year}-${random.toString().padStart(4, '0')}`;
+};
+
+export const generateEventId = (): string => {
+    return `evt-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+};
+
+export const generateWaitlistId = (): string => {
+    return `wl-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+};
+
+export const generateReleaseId = (): string => {
+    return `rel-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+};
+
+export const generateTeamId = (): string => {
+    return `team-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+};
+
+export const generateProjectId = (): string => {
+    return `proj-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+};
+
+export const generateContributionId = (): string => {
+    return `cont-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+};
+
+export const generateInventoryId = (): string => {
+    return `inv-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+};
+
+export const generateCheckoutId = (): string => {
+    return `chk-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+};
+
+export const generateUserId = (): string => {
+    return `user-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+};
+
+export const generateApplicationId = (): string => {
+    return `app-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+};
+
+export const generateInterviewId = (): string => {
+    return `int-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+};
+
+export const generateCohortId = (): string => {
+    return `cohort-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+};
+
+export const generateWikiId = (): string => {
+    return `wiki-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+};
+
+export const generatePollId = (): string => {
+    return `poll-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+};
+
+export const generatePollOptionId = (): string => {
+    return `opt-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+};
+
+export const generateElectionId = (): string => {
+    return `elec-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+};
+
+export const generateCandidateId = (): string => {
+    return `cand-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+};
+
+export const generateMachineId = (): string => {
+    return `mach-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+};
+
+export const generateReservationId = (): string => {
+    return `res-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+};
+

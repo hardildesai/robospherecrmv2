@@ -7,7 +7,7 @@ import { UserPlus } from 'lucide-react';
 import { PageHeader } from '../components/common';
 import { MemberForm } from '../components/members';
 import { useStore } from '../lib/store';
-import { generateMemberId } from '../lib/mockData';
+import { generateMemberId } from '../lib/utils';
 import type { Member, Branch, FeeStatus } from '../lib/types';
 
 export const MemberNewPage: React.FC = () => {

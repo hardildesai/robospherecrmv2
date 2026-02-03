@@ -30,8 +30,17 @@ import { Toaster } from 'sonner';
 
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
 import { AdminRoute } from './components/auth/AdminRoute';
+import { useStore } from './lib/store';
+import { useEffect } from 'react';
 
 function App() {
+    const initializeData = useStore((state) => state.initializeData);
+
+    // Load data from Supabase on app mount
+    useEffect(() => {
+        initializeData();
+    }, [initializeData]);
+
     return (
         <Router>
             <Toaster position="top-right" theme="light" />
